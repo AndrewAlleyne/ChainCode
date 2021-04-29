@@ -100,6 +100,11 @@ public class Main {
         //Get chain code
         cc.getChainCode(fileWriter,  CC_Ary);
 
+        //Construct Boundary
+
+
+
+
 
 
         //Close outputs

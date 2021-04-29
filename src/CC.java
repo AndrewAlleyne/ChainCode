@@ -61,7 +61,6 @@ public class CC {
         if (inputFile.hasNextInt()) maxRow = inputFile.nextInt();
         if (inputFile.hasNextInt()) maxCol = inputFile.nextInt();
 
-        System.out.println(numPixels);
     }
 
     public void getChainCode(FileWriter fileWriter, int[][] cc_ary) throws IOException {
@@ -79,8 +78,11 @@ public class CC {
                     currentP.row = i;
                     currentP.col = j;
                     lastQ = 4;
+
                     while (currentP != startP) {
                         nextQ = (lastQ + 1) % 8;
+                        System.out.println(lastQ);
+
                         PchainDir = findNextP(currentP, nextQ, cc_ary);
                         nextP.row = neighborCoord[PchainDir].row;
                         nextP.col = neighborCoord[PchainDir].col;
@@ -133,24 +135,34 @@ public class CC {
             for (int j = 1; j <= numCols; j++) {
                 if (imageAry[i][j] > 0) {
                     cc_ary[i][j] = imageAry[i][j];
-                    System.out.print(cc_ary[i][j] + " ");
+                    //System.out.print(cc_ary[i][j] + " ");
                 } else {
-                    System.out.print("  ");
+                  //  System.out.print("0 ");
                 }
             }
-            System.out.println();
+            //System.out.println();
         }
     }
 
     //We must know the current P and then obtain the next
     public int findNextP(Point currentP, int nextQ, int[][] cc_ary) {
-        int returnP;
+        int chainDir;
+        int direction = nextQ;
+
 
         //we must first load the neighbor coordinates.
         loadNeighborCoord(currentP);
 
-        //return chain direction
-        return chainDir(nextQ, cc_ary);
+        while(true){
+            if(cc_ary[neighborCoord[direction].row][neighborCoord[direction].col] == label){
+                chainDir = direction;
+                break;
+            }
+            direction = (direction+1)%8;
+        }
+
+        //next chain direction
+        return chainDir;
     }
 
     private int chainDir(int nextQ, int[][] cc_ary) {
@@ -171,6 +183,7 @@ public class CC {
         while (loop < 8) {
             //direction
             nextQ = (++nextQ) % 8;
+
 
             switch (nextQ) {
                 case 0:
