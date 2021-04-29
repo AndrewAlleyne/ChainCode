@@ -78,10 +78,7 @@ public class Main {
         FileWriter fileWriter = new FileWriter(chainCode);
 
         //Write header to Chain code file
-        fileWriter.write(String.valueOf(new StringBuilder().append(numRows).append(" ")
-                .append(numCols).append(" ")
-                .append(minVal).append(" ")
-                .append(maxVal)));
+        fileWriter.write(numRows + " " + numCols + " " + minVal + " " + maxVal + "\n");
 
         FileWriter fileWriter_2 = new FileWriter(chainCode);
 
