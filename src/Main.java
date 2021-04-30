@@ -110,7 +110,6 @@ public class Main {
         //Open stream to labelFile_ChainCodeFile.txt
         Scanner input_3 = new Scanner(outputFile);
 
-
         //Read next items from stream
         if (input_3.hasNextInt()) numRows = input_3.nextInt();
         if (input_3.hasNextInt()) numCols = input_3.nextInt();
@@ -120,72 +119,80 @@ public class Main {
         if (input_3.hasNextInt()) maxVal = input_3.nextInt();
 
 
-        if (input_3.hasNextInt()) pixelValue = input_3.nextInt();
-
-
-        //get starting row and starting column
-        if (input_3.hasNextInt()) startingRow = input_3.nextInt();
-        if (input_3.hasNextInt()) startingCol = input_3.nextInt();
-
-
-        //We can use the header to recreate the original image
-        boundary_Ary[startingRow][startingCol] = pixelValue;
-
-        int rOffset = startingRow;
-        int cOffset = startingCol;
-
-
         nextBorder++;
 
-        while (nextBorder <= cc.numConnectedComponents) {
+        while (input_3.hasNextLine()) {
 
-            while (input_3.hasNextInt()) {
-                int direction = input_3.nextInt();
+            if (input_3.hasNextInt()) pixelValue = input_3.nextInt();
+
+
+            //get starting row and starting column
+            if (input_3.hasNextInt()) startingRow = input_3.nextInt();
+            if (input_3.hasNextInt()) startingCol = input_3.nextInt();
+
+
+            //We can use the header to recreate the original image
+            boundary_Ary[startingRow][startingCol] = pixelValue;
+
+            int rOffset = startingRow;
+            int cOffset = startingCol;
+
+
+            String line = input_3.nextLine();
+
+
+            nextBorder++;
+
+            Scanner lineScan = new Scanner(line);
+
+            while (lineScan.hasNextInt()) {
+
+                int direction = lineScan.nextInt();
 
                 switch (direction) {
 
                     case 0:
                         cOffset++;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 1:
                         rOffset--;
                         cOffset++;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 2:
                         rOffset--;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 3:
                         rOffset--;
                         cOffset--;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 4:
                         cOffset--;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 5:
                         rOffset++;
                         cOffset--;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 6:
                         rOffset++;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     case 7:
                         rOffset++;
                         cOffset++;
-                        boundary_Ary[rOffset][cOffset] = 1;
+                        boundary_Ary[rOffset][cOffset] = pixelValue;
                         break;
 
                     default:
@@ -193,35 +200,23 @@ public class Main {
 
                 }
 
-                if (direction > 7) {
-                    nextBorder++;
-
-                    break;
-                }
             }
-
 
         }
 
 
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-
-                if (boundary_Ary[i][j] == 0) {
-                    System.out.print(". ");
-                    fileWriter_2.write(boundary_Ary[i][j] + " ");
-                } else {
-                    System.out.print("1 ");
-                    fileWriter_2.write(boundary_Ary[i][j] + " ");
-                }
+        for (int i = 0; i <= numRows; i++) {
+            for (int j = 0; j <= numCols; j++) {
+                fileWriter_2.write(boundary_Ary[i][j] + " ");
             }
-            System.out.println();
             fileWriter_2.write("\n");
-
         }
 
 
         //Close all outputs
+        input.close();
+        input_2.close();
+        input_3.close();
         fileWriter.close();
         fileWriter_2.close();
     }
