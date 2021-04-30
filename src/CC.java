@@ -33,6 +33,8 @@ public class CC {
     int nextQ;
     int numConnectedComponents;
 
+    int nextChain = 0;
+
 
     CC(Scanner inputFile) {
         this.inputFile = inputFile;
@@ -65,58 +67,83 @@ public class CC {
 
     public void getChainCode(FileWriter fileWriter, int[][] cc_ary) throws IOException {
 
-        boolean isThere = false;
+        nextChain++;
 
-        for (int i = 0; i < numRows + 2; i++) {
-            for (int j = 0; j < numCols + 2; j++) {
+        while (nextChain <= numConnectedComponents) {
+            boolean isThere = false;
 
-                //get the first pixel
-                if (cc_ary[i][j] == label) {
-                    fileWriter.write(label + " " + minRow + " " + minCol + " ");
-                    startP.row = i;
-                    startP.col = j;
-                    currentP.row = i;
-                    currentP.col = j;
-                    lastQ = 4;
+            for (int i = 0; i < numRows + 2; i++) {
+                for (int j = 0; j < numCols + 2; j++) {
 
-                    while (currentP != startP) {
-                        nextQ = (lastQ + 1) % 8;
-                        System.out.println(lastQ);
+                    //get the first pixel
+                    if (cc_ary[i][j] == label) {
+                        fileWriter.write(label + " " + i + " " + j + " ");
+                        startP.row = i;
+                        startP.col = j;
+                        currentP.row = i;
+                        currentP.col = j;
+                        lastQ = 4;
 
-                        PchainDir = findNextP(currentP, nextQ, cc_ary);
-                        nextP.row = neighborCoord[PchainDir].row;
-                        nextP.col = neighborCoord[PchainDir].col;
+                        while (currentP != startP) {
+                            nextQ = (lastQ + 1) % 8;
 
-                        fileWriter.write(PchainDir + " ");
+                            PchainDir = findNextP(currentP, nextQ, cc_ary);
+                            nextP.row = neighborCoord[PchainDir].row;
+                            nextP.col = neighborCoord[PchainDir].col;
 
-                        if (PchainDir == 0) {
-                            lastQ = zeroTable[7];
-                        } else {
-                            lastQ = zeroTable[PchainDir - 1];
+                            fileWriter.write(PchainDir + " ");
+
+                            if (PchainDir == 0) {
+                                lastQ = zeroTable[7];
+                            } else {
+                                lastQ = zeroTable[PchainDir - 1];
+                            }
+
+                            //change currentP to nextP
+                            currentP.row = nextP.row;
+                            currentP.col = nextP.col;
+
+                            //check if currentP == nextP, if so break
+
+                            if (currentP.row == startP.row && currentP.col == startP.col) {
+                                isThere = true;
+                                break;
+                            }
                         }
-
-                        //change currentP to nextP
-                        currentP.row = nextP.row;
-                        currentP.col = nextP.col;
-
-                        //check if currentP == nextP, if so break
-
-                        if (currentP.row == startP.row && currentP.col == startP.col) {
-                            isThere = true;
-                            break;
-                        }
+                        fileWriter.flush();
                     }
-                    fileWriter.flush();
+
+                    if (isThere) {
+                        break;
+                    }
                 }
+
+                //check condition before moving to the next row
                 if (isThere) {
                     break;
                 }
             }
 
-            //check condition before moving to the next row
-            if (isThere) {
-                break;
-            }
+            //Next chain
+            nextChain++;
+
+
+            //CC label
+            if (inputFile.hasNextInt()) label = inputFile.nextInt();
+
+            //numPixels
+            if (inputFile.hasNextInt()) numPixels = inputFile.nextInt();
+
+
+            //Reads the minRow, minCol of greyscale pixel values
+            if (inputFile.hasNextInt()) minRow = inputFile.nextInt();
+            if (inputFile.hasNextInt()) minCol = inputFile.nextInt();
+
+            //Reads the maxRow, maxCol of greyscale pixel values
+            if (inputFile.hasNextInt()) maxRow = inputFile.nextInt();
+            if (inputFile.hasNextInt()) maxCol = inputFile.nextInt();
+
+            fileWriter.write("\n");
         }
     }
 
